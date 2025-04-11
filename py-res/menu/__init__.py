@@ -44,7 +44,7 @@ user_menu = TerminalMenu(
 )
 
 login_fail_menu_title = "  Logon Failed!.\n  Press E to exit\n"
-login_fail_options = ["[l] Try again", "[e] Exit"]
+login_fail_options = ["[t] Try again", "[e] Exit"]
 login_fail_menu = TerminalMenu(
     menu_entries=login_fail_options,
     title=login_fail_menu_title,
