@@ -18,7 +18,10 @@ class AdminDecorator(Admin, ABC):
         menu_cursor_style = ("fg_red", "bold")
         menu_style = ("bg_red", "fg_yellow")
         admin_menu_title = "  Administration View.\n  Press E to exit\n"
-        admin_menu_options = ["[a] Add a room", "[e] Edit room", "[r] Remove a room", "[v] View rooms",
+        admin_menu_options = ["[a] Add a room",
+                              "[e] Edit room",
+                              "[r] Remove a room",
+                              "[v] View rooms",
                               "[s] Show reservations",
                               "[c] Cancel reservation",
                               "[l] Logout"]
