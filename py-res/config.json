@@ -1,6 +1,6 @@
 {
-  "data_folder" : "/Users/ayeshjayasekara-work/Pet-Projects/py-reservation-standalone/data",
-  "database" : "/Users/ayeshjayasekara-work/Pet-Projects/py-reservation-standalone/data/reservation.db",
+  "data_folder" : "/data",
+  "database" : "/data/reservation.db",
   "temp_password" : "123456",
   "interface": "cli",
   "salt": "b'$2b$12$VhfQSfZB/iBKcDful5qgZe'"
