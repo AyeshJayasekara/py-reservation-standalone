@@ -4,6 +4,7 @@ from PyInquirer import prompt
 from validator_collection import validators
 
 import menu
+from cli.user.cli_admin import DecoratedCliAdmin
 from core.user import password
 from core.user.admin import Admin
 from core.user.user import User
@@ -59,7 +60,8 @@ class Cli:
                 logged_user = UserFactory.create_user(response["type"], response["username"], self.database)
 
                 if isinstance(logged_user, Admin):
-                    menu.show_admin_menu()
+                    # menu.show_admin_menu()
+                    DecoratedCliAdmin(logged_user).execute()
                 else:
                     menu.show_user_menu()
             break
