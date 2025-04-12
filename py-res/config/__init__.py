@@ -11,7 +11,10 @@ ROOM_TABLE_DDL = (
     'CREATE TABLE IF NOT EXISTS ROOM( room_id integer not null constraint ROOM_pk primary key, room_type varchar(100) not null, price REAL not null)')
 
 RESERVATION_TABLE_DDL = (
-    'CREATE TABLE IF NOT EXISTS RESERVATION(res_id    integer primary key, username  varchar(20), room_id   integer,check_in  date, check_out date)')
+    'CREATE TABLE IF NOT EXISTS RESERVATION ( res_id integer primary key autoincrement,username varchar(20) not null, room_id integer not null, check_in_year int not null, check_in_month  integer not null, check_in_day integer not null, check_out_year integer not null, check_out_month integer not null, check_out_day integer not null)')
+
+RESERVATION_SUMMARY_VIEW = (
+    "CREATE VIEW IF NOT EXISTS RESERVATION_SUMMARY_VIEW AS SELECT room_id, datetime(date(check_in_year || '-01-01', '+' || (check_in_month - 1) || ' month', '+' || (check_in_day - 1) || ' day'), '+840 minutes') as check_in,datetime(date(check_out_year || '-01-01', '+' || (check_out_month - 1) || ' month', '+' || (check_out_day - 1) ||' day'), '+600 minutes') as check_out FROM RESERVATION")
 
 RETRIEVE_USER = ('SELECT * FROM USER WHERE username = ?')
 
@@ -22,6 +25,7 @@ class Database:
         self.log = log
         self.config = config
         self.connection = sqlite3.connect(str(Path.home()) + self.config['database'])
+        # self.connection = sqlite3.connect(self.config['database'])
         self.cursor = self.connection.cursor()
 
         if initialize:
@@ -38,6 +42,8 @@ class Database:
         cursor.execute(USER_TABLE_DDL)
         cursor.execute(ROOM_TABLE_DDL)
         cursor.execute(RESERVATION_TABLE_DDL)
+        cursor.execute(RESERVATION_SUMMARY_VIEW)
+        cursor.connection.commit()
 
     def create_power_user(self, cursor):
         self.log.info('CREATING ADMIN POWER USER >>')

@@ -5,8 +5,10 @@ from validator_collection import validators
 
 import menu
 from cli.user.cli_admin import DecoratedCliAdmin
+from cli.user.cli_customer import DecoratedCliCustomer
 from core.user import password
 from core.user.admin import Admin
+from core.user.customer import Customer
 from core.user.user import User
 from core.user.user_factory import UserFactory
 
@@ -63,7 +65,9 @@ class Cli:
                     # menu.show_admin_menu()
                     DecoratedCliAdmin(logged_user).execute()
                 else:
-                    menu.show_user_menu()
+
+                    DecoratedCliCustomer(logged_user).execute()
+
             break
 
     def perform_register(self) -> None:

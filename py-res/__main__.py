@@ -36,12 +36,12 @@ log.info('------  ----------------------- -------')
 
 # Getting the list of directories
 data_directory = os.listdir(str(Path.home()) + config_parameters['data_folder'])
+# data_directory = os.listdir( config_parameters['data_folder'])
 
 # Checking if the list is empty or not
 database = None
 
-if len(data_directory) == 0:
-
+if not any(fname.endswith('.db') for fname in data_directory):
     log.warning("EMPTY DATA FOLDER DETECTED >>> PREPARING FOR INITIAL STARTUP!")
     database = config.Database(log, config_parameters, True)
 else:

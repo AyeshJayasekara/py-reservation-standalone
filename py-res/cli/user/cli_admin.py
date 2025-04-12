@@ -127,7 +127,7 @@ class DecoratedCliAdmin(AdminDecorator):
         table = Table(title="Reservations")
 
         rows = [[str(el) for el in row] for row in records]
-        columns = ['Reservation ID', 'Email', 'Room ID', 'Room Type', 'Price', 'Check In', 'Check Out']
+        columns = ['Reservation ID', 'Room ID', 'Email', 'Room Type', 'Price Per Night', 'Check In', 'Check Out']
 
         for column in columns:
             table.add_column(column)
@@ -162,7 +162,7 @@ class DecoratedCliAdmin(AdminDecorator):
 
         if answer['confirm']:
             booking = Booking(res_id, '', '', '',
-                    '', '', '', '', '')
+                              '', '', '', '', '')
             self.delete_booking(booking)
         else:
             return
