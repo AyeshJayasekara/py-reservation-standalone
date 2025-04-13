@@ -24,6 +24,7 @@ class AdminDecorator(Admin, ABC):
                               "[v] View rooms",
                               "[s] Show reservations",
                               "[c] Cancel reservation",
+                              "[x] Sync database",
                               "[l] Logout"]
         admin_menu = TerminalMenu(
             menu_entries=admin_menu_options,
@@ -51,6 +52,8 @@ class AdminDecorator(Admin, ABC):
             if option == 5:
                 self.cli_delete_booking()
             if option == 6:
+                self.cli_sync_database()
+            if option == 7:
                 return
 
 
@@ -97,3 +100,9 @@ class AdminDecorator(Admin, ABC):
 
     def delete_booking(self, reservation: Booking):
         return self._admin.delete_booking(reservation)
+
+    def cli_sync_database(self):
+        return self.sync_database()
+
+    def sync_database(self):
+        return self._admin.sync_database()

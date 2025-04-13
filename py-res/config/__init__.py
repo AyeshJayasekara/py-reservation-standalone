@@ -1,6 +1,6 @@
 import datetime
 import sqlite3
-from pathlib import Path
+import os
 
 import bcrypt
 
@@ -24,7 +24,7 @@ class Database:
     def __init__(self, log, config, initialize):
         self.log = log
         self.config = config
-        self.connection = sqlite3.connect(str(Path.home()) + self.config['database'])
+        self.connection = sqlite3.connect(os.getcwd() + self.config['database'])
         # self.connection = sqlite3.connect(self.config['database'])
         self.cursor = self.connection.cursor()
 

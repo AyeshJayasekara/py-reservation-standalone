@@ -8,7 +8,11 @@ import cli
 import gui
 from tkinter import *
 
-# pyinstaller --onefile --noconsole __main__.py
+# pyinstaller --onefile --noconsole --paths=subfolder __main__.py
+
+root_directory = str(os.getcwd()) + "/data"
+if not os.path.exists(root_directory):
+    os.makedirs(root_directory)
 
 log.basicConfig(
     encoding="utf-8",
@@ -17,7 +21,7 @@ log.basicConfig(
     style="{",
     datefmt="%Y-%m-%d %H:%M",
     handlers=[
-        log.FileHandler("../app.log"),
+        log.FileHandler(str(os.getcwd()) + "/data/app.log"),
         log.StreamHandler()
     ]
 )
@@ -25,7 +29,7 @@ log.basicConfig(
 log.info("STARTING APPLICATION >> ")
 
 # Opening JSON file
-config_file = open('config.json')
+config_file = open(os.getcwd() + '/data/config.json')
 
 # Load initial configurations to object
 config_parameters = json.load(config_file)
@@ -35,7 +39,8 @@ log.info(config_parameters)
 log.info('------  ----------------------- -------')
 
 # Getting the list of directories
-data_directory = os.listdir(str(Path.home()) + config_parameters['data_folder'])
+# data_directory = os.listdir(str(Path.home()) + config_parameters['data_folder'])
+data_directory = os.listdir(os.getcwd() + config_parameters['data_folder'])
 # data_directory = os.listdir( config_parameters['data_folder'])
 
 # Checking if the list is empty or not

@@ -62,7 +62,6 @@ class Cli:
                 logged_user = UserFactory.create_user(response["type"], response["username"], self.database)
 
                 if isinstance(logged_user, Admin):
-                    # menu.show_admin_menu()
                     DecoratedCliAdmin(logged_user).execute()
                 else:
 
