@@ -93,11 +93,13 @@ class Admin(User):
         reservation_records = pd.read_sql("SELECT row_number() over (ORDER BY res_id) as 'Row' , res.res_id as 'Reservation ID', res.room_id as 'Room ID', u.email as 'Customer Email', r.room_type as 'Room Type', r.price as 'Price Per Night', concat(res.check_in_year, '-', res.check_in_month, '-', res.check_in_day) as 'Check In', concat(res.check_out_year, '-', res.check_out_month, '-', res.check_out_day) as 'Check Out' FROM RESERVATION as res INNER JOIN main.USER u on res.username = u.username INNER JOIN ROOM r on res.room_id = r.room_id", self.database.connection)
         res_summary_records = pd.read_sql("Select r.room_id as 'Room ID', check_in as 'Check In', check_out as 'Check Out' , Cast (( JulianDay(check_out) - JulianDay(check_in)) As Integer) + 1 as 'Number of Nights' , r.price * (Cast (( JulianDay(check_out) - JulianDay(check_in)) As Integer) + 1) as 'Estimated Charge' FROM RESERVATION_SUMMARY_VIEW INNER JOIN main.ROOM R on RESERVATION_SUMMARY_VIEW.room_id = R.room_id", self.database.connection)
 
-        with pd.ExcelWriter(os.getcwd() + '/data/database.xlsx') as writer:
-            user_records.to_excel(writer, sheet_name='Users')
-            room_records.to_excel(writer, sheet_name='Rooms')
-            reservation_records.to_excel(writer, sheet_name='Reservations')
-            res_summary_records.to_excel(writer, sheet_name='Reservations Summary')
+        with pd.ExcelWriter(os.getcwd() + '/data/database.xlsx') as writer1:
+            user_records.to_excel(writer1, sheet_name='Users')
+            room_records.to_excel(writer1, sheet_name='Rooms')
+
+        with pd.ExcelWriter(os.getcwd() + '/data/reservations.xlsx') as writer2:
+            reservation_records.to_excel(writer2, sheet_name='Reservations')
+            res_summary_records.to_excel(writer2, sheet_name='Reservations Summary')
 
 
 
