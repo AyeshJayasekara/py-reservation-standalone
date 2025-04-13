@@ -1,9 +1,66 @@
+
 from rich.prompt import Prompt
 
 from cli.user.customer_decorator import CustomerDecorator
 from rich.console import Console
 from rich.table import Table
 from PyInquirer import prompt
+from prompt_toolkit.validation import Validator, ValidationError
+
+class RoomValidator(Validator):
+    def validate(self, document):
+        try:
+            room = int(document.text)
+
+
+            if room < 2025 or room > 2027:
+                raise ValidationError(
+                    message='Please enter a valid room number',
+                    cursor_position=len(document.text))  # Move cursor to end
+        except ValueError:
+            raise ValidationError(
+                message='Please enter a valid room number',
+                cursor_position=len(document.text))  # Move cursor to end
+
+class YearValidator(Validator):
+    def validate(self, document):
+        try:
+            year = int(document.text)
+            if year < 2025 or year > 2027:
+                raise ValidationError(
+                    message='Please enter a valid year',
+                    cursor_position=len(document.text))  # Move cursor to end
+        except ValueError:
+            raise ValidationError(
+                message='Please enter a valid year',
+                cursor_position=len(document.text))  # Move cursor to end
+
+class MonthValidator(Validator):
+    def validate(self, document):
+        try:
+            month = int(document.text)
+            if month < 1 or month > 12:
+                raise ValidationError(
+                    message='Please enter a valid month ranging from 1 to 12',
+                    cursor_position=len(document.text))  # Move cursor to end
+        except ValueError:
+            raise ValidationError(
+                message='Please enter a valid month ranging from 1 to 12',
+                cursor_position=len(document.text))  # Move cursor to end
+
+
+class DayValidator(Validator):
+    def validate(self, document):
+        try:
+            day = int(document.text)
+            if day < 1 or day > 31:
+                raise ValidationError(
+                    message='Please enter a valid day ranging from 1 to 31',
+                    cursor_position=len(document.text))  # Move cursor to end
+        except ValueError:
+            raise ValidationError(
+                message='Please enter a valid month ranging from 1 to 31',
+                cursor_position=len(document.text))  # Move cursor to end
 
 
 class DecoratedCliCustomer(CustomerDecorator):
@@ -63,7 +120,8 @@ class DecoratedCliCustomer(CustomerDecorator):
         ]
         answers = prompt(questions)
         records = self.check_availability(answers['check_in_year'], answers['check_in_month'], answers['check_in_day'],
-                                  answers['check_out_year'], answers['check_out_month'], answers['check_out_day'])
+                                          answers['check_out_year'], answers['check_out_month'],
+                                          answers['check_out_day'])
 
         table = Table(title="Available Rooms")
 
@@ -84,45 +142,51 @@ class DecoratedCliCustomer(CustomerDecorator):
             return
         else:
             self.book_room(response, answers['check_in_year'], answers['check_in_month'], answers['check_in_day'],
-                                  answers['check_out_year'], answers['check_out_month'], answers['check_out_day'])
-
+                           answers['check_out_year'], answers['check_out_month'], answers['check_out_day'])
 
     def cli_book_room(self):
         questions = [
             {
                 'type': 'input',
                 'name': 'room_id',
-                'message': 'Room ID:'
+                'message': 'Room ID:',
+                'validate': lambda val: self.valid_room(val)
             },
             {
                 'type': 'input',
                 'name': 'check_in_year',
-                'message': 'Check In Year:'
+                'message': 'Check In Year:',
+                'validate': YearValidator
             },
             {
                 'type': 'input',
                 'name': 'check_in_month',
-                'message': 'Check In Month:'
+                'message': 'Check In Month:',
+                'validate': MonthValidator
             },
             {
                 'type': 'input',
                 'name': 'check_in_day',
-                'message': 'Check In Day:'
+                'message': 'Check In Day:',
+                'validate': DayValidator
             },
             {
                 'type': 'input',
                 'name': 'check_out_year',
-                'message': 'Check Out Year:'
+                'message': 'Check Out Year:',
+                'validate': YearValidator
             },
             {
                 'type': 'input',
                 'name': 'check_out_month',
-                'message': 'Check Out Month:'
+                'message': 'Check Out Month:',
+                'validate': MonthValidator
             },
             {
                 'type': 'input',
                 'name': 'check_out_day',
-                'message': 'Check Out Day:'
+                'message': 'Check Out Day:',
+                'validate': DayValidator
             }
 
         ]
@@ -135,8 +199,9 @@ class DecoratedCliCustomer(CustomerDecorator):
                                               answers['check_out_day'])
             for record in records:
                 if int(record[0]) == int(answers['room_id']):
-                    self.book_room(answers['room_id'], answers['check_in_year'], answers['check_in_month'], answers['check_in_day'],
-                                  answers['check_out_year'], answers['check_out_month'], answers['check_out_day'])
+                    self.book_room(answers['room_id'], answers['check_in_year'], answers['check_in_month'],
+                                   answers['check_in_day'],
+                                   answers['check_out_year'], answers['check_out_month'], answers['check_out_day'])
                     return
             console = Console()
             console.input("Room Not Available > Press enter to try again...")
@@ -148,7 +213,8 @@ class DecoratedCliCustomer(CustomerDecorator):
         table = Table(title="My Reservations")
 
         rows = [[str(el) for el in row] for row in records]
-        columns = ['Reservation ID', 'Room Type', 'Price Per Night', 'Check In Year','Check In Month','Check In Day','Check Out Year','Check Out Month','Check Out Day']
+        columns = ['Reservation ID', 'Room Type', 'Price Per Night', 'Check In Year', 'Check In Month', 'Check In Day',
+                   'Check Out Year', 'Check Out Month', 'Check Out Day']
 
         for column in columns:
             table.add_column(column)
@@ -159,7 +225,6 @@ class DecoratedCliCustomer(CustomerDecorator):
         console = Console()
         console.print(table)
         console.input("Press enter to continue...")
-
 
     def cli_cancel_res(self):
         records = self.show_reservations()
@@ -184,3 +249,18 @@ class DecoratedCliCustomer(CustomerDecorator):
             return
         else:
             self.cancel_booking(response)
+
+    def valid_room(self, room: 0):
+
+        rooms = self.view_rooms()
+        is_valid = False
+        for r in rooms:
+            if int(r[0]) == int(room):
+                is_valid = True
+                break
+
+        if not is_valid:
+            raise ValidationError(
+                message='Please enter a valid room number')
+        return True
+

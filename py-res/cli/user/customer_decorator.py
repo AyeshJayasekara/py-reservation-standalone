@@ -1,10 +1,5 @@
 from abc import ABC, abstractmethod
 
-from typing_extensions import override
-
-from core.reservation.booking import Booking
-from core.reservation.room import Room
-
 from simple_term_menu import TerminalMenu
 
 from core.user.customer import Customer
